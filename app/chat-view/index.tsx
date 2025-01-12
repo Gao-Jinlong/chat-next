@@ -16,10 +16,8 @@ export default function ChatView() {
   const handleSubmit = async (content: string) => {
     try {
       setLoading(true);
-      // 添加用户消息
       setMessages((prev) => [...prev, { role: "user", content }]);
 
-      // 发送到 API
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -28,11 +26,9 @@ export default function ChatView() {
 
       const data = await response.json();
 
-      // 添加 AI 回复
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.response },
-      ]);
+      const message = data.response.kwargs.content;
+
+      setMessages((prev) => [...prev, { role: "assistant", content: message }]);
     } catch (error) {
       console.error("Error:", error);
     } finally {

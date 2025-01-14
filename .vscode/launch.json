@@ -26,7 +26,7 @@
         "--inspect"
       ],
       "skipFiles": [
-        // "<node_internals>/**"
+        "<node_internals>/**"
       ],
       "serverReadyAction": {
         "action": "debugWithChrome",

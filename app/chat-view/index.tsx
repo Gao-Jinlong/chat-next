@@ -2,45 +2,41 @@
 
 import { InputCard } from "@/components/domain/Input-card";
 import { MessageList } from "@/components/domain/message-list";
-import { useState } from "react";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import { useCallback, useContext } from "react";
+import { ChatContext } from "./chat-context";
 
 export default function ChatView() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { pushMessage, setLoading } = useContext(ChatContext);
 
-  const handleSubmit = async (content: string) => {
-    try {
-      setLoading(true);
-      setMessages((prev) => [...prev, { role: "user", content }]);
+  const handleSubmit = useCallback(
+    async (content: string) => {
+      try {
+        setLoading(true);
 
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: content }),
-      });
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: content }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      const message = data.response.kwargs.content;
+        const message = data.response.kwargs.content;
 
-      setMessages((prev) => [...prev, { role: "assistant", content: message }]);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        pushMessage({ role: "assistant", content: message });
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pushMessage, setLoading],
+  );
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 p-4">
-      <h1 className="text-2xl font-bold">AI 聊天助手</h1>
-      <MessageList messages={messages} loading={loading} />
-      <InputCard onSubmit={handleSubmit} loading={loading} />
+    <main className="mx-auto flex w-full max-w-4xl flex-col items-center justify-center gap-8 p-4">
+      <MessageList />
+      <InputCard onSubmit={handleSubmit} />
     </main>
   );
 }

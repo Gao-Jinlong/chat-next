@@ -1,6 +1,6 @@
-import ChatView from "./chat-view";
+import ChatView from "../components/domain/chat-view";
 
-export default async function Home() {
+export default function Home() {
   return (
     <div className="flex min-h-screen">
       <ChatView />

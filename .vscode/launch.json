@@ -8,10 +8,11 @@
       "command": "pnpm run dev",
     },
     {
-      "name": "Next.js: debug client-side",
+      "name": "client-side",
       "type": "chrome",
       "request": "launch",
-      "url": "https://127.0.0.1:3000"
+      "url": "https://127.0.0.1:3000",
+      "userDataDir": false
     },
     {
       "name": "Next.js: debug full stack",
@@ -29,12 +30,17 @@
         "<node_internals>/**"
       ],
       "serverReadyAction": {
+        // "action": "startDebugging",
+        // "name": "client-side",
         "action": "debugWithChrome",
         "killOnServerStop": true,
         "pattern": "- Local:.+(https?://.+)",
         "uriFormat": "%s",
-        "webRoot": "${workspaceFolder}"
-      }
+        "webRoot": "${workspaceFolder}",
+        // "chromeLaunchConfig": {
+        //   "userDataDir": false // 设置为 false 使用默认用户数据
+        // },
+      },
     }
   ]
 }

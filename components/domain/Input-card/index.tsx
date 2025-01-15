@@ -1,30 +1,35 @@
-import { ChatContext } from "@/app/chat-view/chat-context";
+"use client";
+
+import { ChatContext } from "@/components/domain/chat-view/chat-context";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SendHorizontal } from "lucide-react";
-import { useState, useRef, KeyboardEvent, useContext } from "react";
+import {
+  useState,
+  useRef,
+  KeyboardEvent,
+  useContext,
+  useCallback,
+} from "react";
 import { cn } from "@/lib/utils";
-interface InputCardProps {
-  onSubmit: (message: string) => Promise<void>;
-}
 
-export function InputCard({ onSubmit }: InputCardProps) {
-  const { hasMessage, loading } = useContext(ChatContext);
+export function InputCard() {
+  const { hasMessage, loading, sendMessage } = useContext(ChatContext)!;
 
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!input.trim() || loading) return;
 
     try {
-      await onSubmit(input);
+      await sendMessage(input);
       setInput("");
       textareaRef.current?.focus();
     } catch (error) {
       console.error("Error submitting message:", error);
     }
-  };
+  }, [input, loading, sendMessage]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -40,16 +45,20 @@ export function InputCard({ onSubmit }: InputCardProps) {
           有什么可以帮忙的？
         </h2>
       )}
-      <div className="flex items-end gap-2 p-4">
-        <Textarea
-          ref={textareaRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="输入消息，按 Enter 发送，Shift + Enter 换行..."
-          className="max-h-[200px] min-h-[80px] resize-none"
-          disabled={loading}
-        />
+      <div className="flex items-end gap-2 p-2">
+        {/* TODO 高度自适应 */}
+        <div className="flex max-h-[200px] min-h-[128px] flex-1 overflow-hidden rounded-lg border">
+          <Textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="输入消息，按 Enter 发送，Shift + Enter 换行..."
+            className="scrollbar-thin flex-1 resize-none rounded-none border-none"
+            disabled={loading}
+          />
+        </div>
+
         <Button
           onClick={handleSubmit}
           disabled={loading || !input.trim()}

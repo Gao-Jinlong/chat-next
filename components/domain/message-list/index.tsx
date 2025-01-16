@@ -27,13 +27,6 @@ export function MessageList() {
     const height = scrollRef.current?.clientHeight || 0;
     const scrollHeight = scrollRef.current?.scrollHeight || 0;
 
-    console.log(
-      "🚀 ~ showScrollBottom ~ height:",
-      height,
-      scrollHeight,
-      scrollTop > scrollHeight - height * 0.8,
-    );
-
     return scrollTop < scrollHeight - height * 1.2;
   }, [scrollTop]);
 
@@ -93,7 +86,7 @@ export function MessageList() {
           <Button
             onClick={handleScrollBottom}
             variant="ghost"
-            className="h-5 w-5 rounded-full bg-background p-3"
+            className="h-5 w-5 rounded-full bg-background p-3 shadow-lg"
           >
             <ArrowDown className="h-4 w-4" />
           </Button>

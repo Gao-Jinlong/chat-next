@@ -56,7 +56,7 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         pushMessage({ role: "user", content });
 
         if (!hasMessage) {
-          setTheme(content);
+          setTheme(content.slice(0, 10));
         }
 
         const response = await fetch("/api/chat", {
